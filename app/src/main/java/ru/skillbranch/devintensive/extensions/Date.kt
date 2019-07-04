@@ -8,7 +8,33 @@ enum class TimeUnits(val size: Long) {
     SECOND(1000L),
     MINUTE(60 * SECOND.size),
     HOUR(60 * MINUTE.size),
-    DAY(24 * HOUR.size)
+    DAY(24 * HOUR.size);
+
+    fun plural(value: Int): String {
+        val temp = value % 100
+        return when (this) {
+            SECOND -> {
+                if ((temp % 10 >= 2) && (temp % 10 <= 4)) "$value секунды"
+                else if ((temp % 10 == 1) && temp / 10 != 1) "$value секунду"
+                else "$value секунд"
+            }
+            MINUTE -> {
+                if ((temp % 10 >= 2) && (temp % 10 <= 4)) "$value минуты"
+                else if ((temp % 10 == 1) && temp / 10 != 1) "$value минуту"
+                else "$value минут"
+            }
+            HOUR -> {
+                if ((temp % 10 >= 2) && (temp % 10 <= 4)) "$value часа"
+                else if ((temp % 10 == 1) && temp / 10 != 1) "$value час"
+                else "$value часов"
+            }
+            DAY -> {
+                if ((temp % 10 >= 2) && (temp % 10 <= 4)) "$value дня"
+                else if ((temp % 10 == 1) && temp / 10 != 1) "$value день"
+                else "$value дней"
+            }
+        }
+    }
 }
 
 val Int.sec get() = this * TimeUnits.SECOND.size
