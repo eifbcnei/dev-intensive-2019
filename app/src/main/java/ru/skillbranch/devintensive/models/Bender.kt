@@ -24,14 +24,14 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         return if (isValid) {
             if (question.answers.contains(answer.toLowerCase())) {
                 question = question.nextQuestion()
-                "Отлично - ты справился!\n${askQuestion()}" to status.color
+                "Отлично - ты справился\n${askQuestion()}" to status.color
             } else {
                 status = status.nextStatus()
                 // 3 попытки, иначе - заново
                 if (status == Status.NORMAL) {
                     question = Question.NAME
                 }
-                "Это неправильный ответ!\n${askQuestion()}" to status.color
+                "Это неправильный ответ\n${askQuestion()}" to status.color
             }
         } else {
             "$comment\n${askQuestion()}" to status.color
