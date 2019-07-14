@@ -1,12 +1,13 @@
 package ru.skillbranch.devintensive
 
 import android.graphics.Color
-import android.graphics.PointF
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.text.InputType
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 
 import android.widget.EditText
 import android.widget.ImageView
@@ -26,12 +27,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         benderImage = iv_bender
         textTxt = tv_text
         messageEt = et_message
         sendBtn = iv_send
 
+
+        makeSendOnActionDone(messageEt)
         val status = savedInstanceState?.getString("STATUS") ?: Bender.Status.NORMAL.name
         val question = savedInstanceState?.getString("QUESTION") ?: Bender.Question.NAME.name
         benderObj = Bender(Bender.Status.valueOf(status), Bender.Question.valueOf(question))
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Log.d("M_MainActivity:", "onCreate")
         val (r, g, b) = benderObj.status.color
         benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
+        textTxt.text = benderObj.askQuestion()
+
 
         sendBtn.setOnClickListener(this)
     }
@@ -71,6 +75,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onPause() {
         super.onPause()
         Log.d("M_MainActivity:", "onPause")
+    }
+
+    private fun makeSendOnActionDone(editText: EditText) {
+        editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) sendBtn.performClick()
+            false
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
