@@ -19,15 +19,14 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     fun askQuestion() = question.question
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
-        //пара из значений успешности теста и комментарий в случае ошибки
         val (isValid, comment) = question.testInput(answer)
         return if (isValid) {
-            if (question.answers.contains(answer.toLowerCase())) {
+            if (question.answers.contains(answer.toLowerCase()) || question == Question.IDLE) {
                 question = question.nextQuestion()
                 "Отлично - ты справился\n${askQuestion()}" to status.color
             } else {
-                status = status.nextStatus()
                 // 3 попытки, иначе - заново
+                status = status.nextStatus()
                 if (status == Status.NORMAL) {
                     question = Question.NAME
                 }
@@ -42,13 +41,13 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     enum class Question(val question: String, val answers: List<String>) {
         NAME("Как меня зовут?", listOf("Бендер", "bender")) {
             override fun testInput(answer: String): Pair<Boolean, String> =
-                answer[0].isUpperCase() to "Имя должно начинаться с заглавной буквы"
+                (answer.isNotEmpty() && answer[0].isUpperCase()) to "Имя должно начинаться с заглавной буквы"
 
             override fun nextQuestion(): Question = PROFESSION
         },
         PROFESSION("Назови мою профессию?", listOf("сгибальщик", "bender")) {
             override fun testInput(answer: String): Pair<Boolean, String> =
-                !answer[0].isUpperCase() to "Профессия должна начинаться со строчной буквы"
+                (answer.isNotEmpty() && !answer[0].isUpperCase()) to "Профессия должна начинаться со строчной буквы"
 
             override fun nextQuestion(): Question = MATERIAL
         },
@@ -72,11 +71,10 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         },
         IDLE("На этом все, вопросов больше нет", listOf()) {
             override fun testInput(answer: String): Pair<Boolean, String> = true to ""//игнорируем валидацию
-
             override fun nextQuestion(): Question = IDLE
         };
 
         abstract fun nextQuestion(): Question
-        abstract fun testInput(answer: String): Pair<Boolean, String>
+        abstract fun testInput(answer: String): Pair<Boolean, String>//пара из значений успешности теста и комментарий в случае ошибки
     }
 }

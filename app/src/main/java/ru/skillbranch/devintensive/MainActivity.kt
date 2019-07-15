@@ -3,8 +3,6 @@ package ru.skillbranch.devintensive
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -14,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.models.Bender
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -32,17 +31,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         messageEt = et_message
         sendBtn = iv_send
 
-
         makeSendOnActionDone(messageEt)
         val status = savedInstanceState?.getString("STATUS") ?: Bender.Status.NORMAL.name
         val question = savedInstanceState?.getString("QUESTION") ?: Bender.Question.NAME.name
         benderObj = Bender(Bender.Status.valueOf(status), Bender.Question.valueOf(question))
 
-        Log.d("M_MainActivity:", "onCreate")
+        Log.d("M_MainActivity:", "onCreate ${status} $question")
         val (r, g, b) = benderObj.status.color
         benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
         textTxt.text = benderObj.askQuestion()
-
 
         sendBtn.setOnClickListener(this)
     }
@@ -78,18 +75,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun makeSendOnActionDone(editText: EditText) {
-        editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        //editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
         editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) sendBtn.performClick()
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                sendBtn.performClick()
+                hideKeyboard()
+                true
+            }
             false
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
 
         outState?.putString("STATUS", benderObj.status.name)
-        outState?.putString("QUESTION", benderObj.question.question)
+        outState?.putString("QUESTION", benderObj.question.name)
         Log.d("M_MainActivity:", "onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}")
     }
 
