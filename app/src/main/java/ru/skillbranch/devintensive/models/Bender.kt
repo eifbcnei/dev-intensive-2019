@@ -27,10 +27,12 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
             } else {
                 // 3 попытки, иначе - заново
                 status = status.nextStatus()
-                if (status == Status.NORMAL) {
+                if (status == Bender.Status.NORMAL) {
                     question = Question.NAME
+                    "Это неправильный ответ. Давай все по новой\n${askQuestion()}" to status.color
+                } else {
+                    "Это неправильный ответ\n${askQuestion()}" to status.color
                 }
-                "Это неправильный ответ\n${askQuestion()}" to status.color
             }
         } else {
             "$comment\n${askQuestion()}" to status.color
