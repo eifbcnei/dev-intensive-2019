@@ -26,40 +26,39 @@ object PreferencesRepository {
 
     fun getAppTheme() = prefs.getInt(APP_THEME, AppCompatDelegate.MODE_NIGHT_NO)
 
-    fun getProfile(): Profile =
-        Profile(
-            prefs.getString(FIRST_NAME, "")!!,
-            prefs.getString(LAST_NAME, "")!!,
-            prefs.getString(ABOUT, "")!!,
-            prefs.getString(REPOSITORY, "")!!,
-            prefs.getInt(RATING, 0),
-            prefs.getInt(RESPECT, 0)
-        )
-
-
-    fun saveProfile(profile: Profile) = with(profile) {
-        putValue(FIRST_NAME to firstName)
-        putValue(LAST_NAME to lastName)
-        putValue(ABOUT to about)
-        putValue(REPOSITORY to repository)
-        putValue(RATING to rating)
-        putValue(RESPECT to respect)
+    fun saveProfile(profile: Profile) {
+        with(profile) {
+            putValue(FIRST_NAME to firstName)
+            putValue(LAST_NAME to lastName)
+            putValue(ABOUT to about)
+            putValue(REPOSITORY to repository)
+            putValue(RATING to rating)
+            putValue(RESPECT to respect)
+        }
     }
 
-    fun putValue(pair: Pair<String, Any>) = with(prefs.edit()) {
-        val (key, value) = pair
+    fun getProfile() = Profile(
+        prefs.getString(FIRST_NAME, "")!!,
+        prefs.getString(LAST_NAME, "")!!,
+        prefs.getString(ABOUT, "")!!,
+        prefs.getString(REPOSITORY, "")!!,
+        prefs.getInt(RATING, 0),
+        prefs.getInt(RESPECT, 0)
+    )
 
-        when (value) {
+    private fun putValue(pair: Pair<String, Any>) = with(prefs.edit()){
+        val key = pair.first
+        val value = pair.second
+
+        when(value) {
             is String -> putString(key, value)
             is Int -> putInt(key, value)
             is Boolean -> putBoolean(key, value)
             is Long -> putLong(key, value)
             is Float -> putFloat(key, value)
-            else -> error("Only primitives type can be stored in Shared Preferences")
+            else -> error("only primitives types can be stored in Shared Preferences")
         }
 
         apply()
     }
-
-
 }

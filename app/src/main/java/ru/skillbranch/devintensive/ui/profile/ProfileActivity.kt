@@ -11,26 +11,29 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 
 class ProfileActivity : AppCompatActivity() {
     companion object {
-        val IS_EDIT_MODE = "IS_EDIT_MODE"
+        const val IS_EDIT_MODE = "IS_EDIT_MODE"
     }
 
     private lateinit var viewModel: ProfileViewModel
     var isEditMode = false
     lateinit var viewFields: Map<String, TextView>
-    override fun onCreate(savedInstanceState: Bundle?) {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        initViewModel()
-        initViews(savedInstanceState)
         Log.d("M_ProfileActivity:", "onCreate")
+        setContentView(R.layout.activity_profile)
+        initViews(savedInstanceState)
+        initViewModel()
+
+
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -66,7 +69,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
+        Log.d("M_ProfileActivity:","before init")
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        Log.d("M_ProfileActivity:","after init")
         viewModel.getProfileData().observe(this, Observer { updateUI(it) })
         viewModel.getTheme().observe(this, Observer { updateTheme(it) })
     }
