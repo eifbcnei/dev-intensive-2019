@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.viewmodels
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,11 +13,8 @@ class ProfileViewModel: ViewModel() {
     private val appTheme = MutableLiveData<Int>()
 
     init {
-        Log.d("M_ProfileViewModel:","start init")
         profileData.value = repository.getProfile()
-        Log.d("M_ProfileViewModel:","during init")
         appTheme.value = repository.getAppTheme()
-        Log.d("M_ProfileViewModel:","init finish")
     }
 
     fun getProfileData(): LiveData<Profile>{

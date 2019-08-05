@@ -46,11 +46,11 @@ object PreferencesRepository {
         prefs.getInt(RESPECT, 0)
     )
 
-    private fun putValue(pair: Pair<String, Any>) = with(prefs.edit()){
+    private fun putValue(pair: Pair<String, Any>) = with(prefs.edit()) {
         val key = pair.first
         val value = pair.second
 
-        when(value) {
+        when (value) {
             is String -> putString(key, value)
             is Int -> putInt(key, value)
             is Boolean -> putBoolean(key, value)

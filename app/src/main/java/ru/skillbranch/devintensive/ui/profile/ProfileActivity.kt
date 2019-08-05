@@ -32,8 +32,6 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         initViews(savedInstanceState)
         initViewModel()
-
-
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -43,7 +41,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun initViews(savedInstanceState: Bundle?) {
         viewFields = mapOf(
-            "nickname" to tv_nick_name,
+            "nickName" to tv_nick_name,
             "rank" to tv_rank,
             "firstName" to et_first_name,
             "lastName" to et_last_name,
@@ -69,9 +67,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        Log.d("M_ProfileActivity:","before init")
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-        Log.d("M_ProfileActivity:","after init")
         viewModel.getProfileData().observe(this, Observer { updateUI(it) })
         viewModel.getTheme().observe(this, Observer { updateTheme(it) })
     }
