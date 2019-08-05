@@ -47,8 +47,7 @@ object PreferencesRepository {
     )
 
     private fun putValue(pair: Pair<String, Any>) = with(prefs.edit()) {
-        val key = pair.first
-        val value = pair.second
+        val (key, value) = pair
 
         when (value) {
             is String -> putString(key, value)
@@ -58,7 +57,6 @@ object PreferencesRepository {
             is Float -> putFloat(key, value)
             else -> error("only primitives types can be stored in Shared Preferences")
         }
-
         apply()
     }
 }

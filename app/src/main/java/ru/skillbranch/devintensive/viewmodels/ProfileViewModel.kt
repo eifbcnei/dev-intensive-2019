@@ -7,17 +7,40 @@ import androidx.lifecycle.ViewModel
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.repositories.PreferencesRepository
 
-class ProfileViewModel: ViewModel() {
+class ProfileViewModel : ViewModel() {
     private val repository: PreferencesRepository = PreferencesRepository
     private val profileData = MutableLiveData<Profile>()
     private val appTheme = MutableLiveData<Int>()
+    private val repositoryError = MutableLiveData<Boolean>()
+
+    fun getRepositoryError(): LiveData<Boolean> = repositoryError
+
+    fun onRepositoryChanged(repository: String) {
+        repositoryError.value = isValidateRepository(repository)
+    }
+
+    private fun isValidateRepository(repoText: String): Boolean {
+        val regexStr =
+            "^(https:\\/\\/)?(www\\.)?(github\\.com\\/)(?!(${getRegexExceptions()})(?=\\/|\$))[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}(\\/)?$"
+        val regex = Regex(regexStr)
+
+        return (repoText.isNotEmpty() && !regex.matches(repoText))
+    }
+
+    private fun getRegexExceptions(): String {
+        val exceptions = arrayOf(
+            "enterprise", "features", "topics", "collections", "trending", "events", "marketplace", "pricing",
+            "nonprofit", "customer-stories", "security", "login", "join"
+        )
+        return exceptions.joinToString("|")
+    }
 
     init {
         profileData.value = repository.getProfile()
         appTheme.value = repository.getAppTheme()
     }
 
-    fun getProfileData(): LiveData<Profile>{
+    fun getProfileData(): LiveData<Profile> {
         return profileData
     }
 
@@ -35,5 +58,4 @@ class ProfileViewModel: ViewModel() {
 
         repository.saveAppTheme(appTheme.value!!)
     }
-
 }
