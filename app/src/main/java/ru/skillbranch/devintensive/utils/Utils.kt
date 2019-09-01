@@ -25,7 +25,7 @@ object Utils {
         if (fullName == " ") return Pair(null, null)
 
 
-        var args: List<String> = fullName?.split(" ")
+        var args: List<String> = fullName.split(" ")
         var arg1 = args.getOrNull(0)
         var arg2 = args.getOrNull(1)
         return Pair(arg1!!, arg2!!)

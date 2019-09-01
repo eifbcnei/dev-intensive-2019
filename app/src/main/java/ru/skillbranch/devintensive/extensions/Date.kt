@@ -46,6 +46,18 @@ val Long.asMin get() = this.absoluteValue / TimeUnits.MINUTE.size
 val Long.asHour get() = this.absoluteValue / TimeUnits.HOUR.size
 val Long.asDay get() = this.absoluteValue / TimeUnits.DAY.size
 
+fun Date.shortFormat(): String? {
+    val pattern = if (this.isSameDay(Date())) "HH:mm" else "dd.MM.yy"
+    val dateFormat = SimpleDateFormat(pattern, Locale("ru"))
+    return dateFormat.format(this)
+}
+
+fun Date.isSameDay(date: Date): Boolean {
+    val day1 = this.time / TimeUnits.DAY.size
+    val day2 = date.time / TimeUnits.DAY.size
+    return day1 == day2
+}
+
 fun Date.format(pattern: String = "HH:mm:ss dd.MM.yy"): String {
     val dateFormat = SimpleDateFormat(pattern, Locale("ru"))
     return dateFormat.format(this)
